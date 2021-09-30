@@ -44,6 +44,7 @@ function createTable(GL,out=false)
 	for (let i=0;i<(verts.length/3);i++){
 		colors = colors.concat(modelColor);
 	}
+
 	// Now that we know how big everything is, copy to typed arrays for OpenGL
 	let table = { vertices: createGLBuffer(GL, verts),
 				  colors: createGLBuffer(GL, colors),

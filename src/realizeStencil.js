@@ -268,7 +268,7 @@ const SIMPLE_FRAGMENT = `
         gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
         gl.stencilMask(0xff);
         // No need to display the triangle
-        // gl.colorMask(0, 0, 0, 0);
+        gl.colorMask(0, 0, 0, 0);
 
 		drawModel(gl, selectionShader, perspective_matrix.elements, model_matrix.elements, lights, MODEL_COLOR, model);
 

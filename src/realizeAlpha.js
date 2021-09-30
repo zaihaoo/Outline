@@ -352,9 +352,9 @@ const SIMPLE_FRAGMENT = `
 
 
 
-		// drawModel(gl, tableShader, perspective_matrix.elements, model_matrix.elements, lights, MODEL_COLOR, model);
+		drawModel(gl, tableShader, perspective_matrix.elements, model_matrix.elements, lights, MODEL_COLOR, model);
 
-        // requestAnimationFrame(render);
+        requestAnimationFrame(render);
     }
 })
 
