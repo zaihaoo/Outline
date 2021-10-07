@@ -4,6 +4,10 @@ Promise.all(urls.map(url =>
 )).then(shader => {
     const canvas = document.getElementById("canvas");
     const gl = getWebGLContext(canvas);
+    let ext = gl.getExtension("OES_standard_derivatives"); 
+    if (!ext) { 
+        alert("this machine or browser does not support OES_standard_derivatives"); 
+    } 
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
@@ -72,6 +76,7 @@ Promise.all(urls.map(url =>
 	// this should be the same size as the frame buffer.
 	const level = 0;
 	const border = 0;
+
 	const selectionMask = gl.createTexture();
 	gl.bindTexture(gl.TEXTURE_2D, selectionMask);
 	gl.texImage2D(gl.TEXTURE_2D, level, gl.RGBA,
@@ -84,6 +89,7 @@ Promise.all(urls.map(url =>
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
 	const maskFB = gl.createFramebuffer();
 	gl.bindFramebuffer(gl.FRAMEBUFFER, maskFB);  // bind so we can set params
 	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
@@ -245,13 +251,16 @@ const SIMPLE_FRAGMENT = `
 
         // Draw the rest of the scene first
 		// gl.clearColor(1, 1, 1, 1);
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        // gl.clearColor(1.0, 0.0, 0.0, 1.0);
+
+
+
 
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, maskFB);
-		gl.clearColor(0, 0, 0, 1);
-		gl.clear(gl.COLOR_BUFFER_BIT);
-		drawModel(gl, selectionShader, perspective_matrix.elements, model_matrix.elements, lights, WHITE, model);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		drawModel(gl, selectionShader, perspective_matrix.elements, model_matrix.elements, lights, OUTLINE_COLOR, model);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
@@ -269,6 +278,7 @@ const SIMPLE_FRAGMENT = `
 
 		gl.disable(gl.DEPTH_TEST);
 		gl.enable(gl.BLEND);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		gl.drawArrays(gl.TRIANGLES, 0, quad.count);
 		gl.disable(gl.BLEND);
 		gl.enable(gl.DEPTH_TEST);

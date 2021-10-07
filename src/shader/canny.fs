@@ -10,7 +10,6 @@ const int w = 3;
 // 首先根据w计算卷积核(Kernel)的矩阵 譬如2就是5x5的矩阵 3就是7x7的矩阵 由列矩阵[]
 const int level = w + (w + 1);
 const int size = level * level;
-const float interpolation_max = 500.0;
 
 vec2 calcGrads(vec2 p) {
     // 因为后面计算图片的灰度值是float型 所以这里必须是float型 后面才能参与计算 构建两个长度为5的数组 然后两个数组相乘就计算出5x5的矩阵
@@ -70,7 +69,7 @@ vec2 calcGrads(vec2 p) {
 
     // 根据X和Y方向的卷积生成当前像素的梯值 当梯值大于一定的阈值则可以确定该像素在模型边缘 否则直接丢弃该片元即可
     float G = length(vec2(Gx,Gy));
-    float angle = atan(Gx/Gy);
+    float angle = atan(Gy/Gx);
     return vec2(G,angle);
 }
 
