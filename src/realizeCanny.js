@@ -1,4 +1,4 @@
-const urls = ["./shader/canny.vs", "./shader/canny.fs", "./shader/nms.vs", "./shader/nms.fs"];
+const urls = ["./shader/canny.vs", "./shader/canny.fs", "./shader/nms.vs", "./shader/nms.fs", "./shader/edges.vs", "./shader/edges.fs"];
 Promise.all(urls.map(url =>
     fetch(url).then(resp => resp.text())
 )).then(shader => {
@@ -194,6 +194,20 @@ Promise.all(urls.map(url =>
             };
     }
 
+    function createEdgesShader(GL)
+    {
+        const program = createProgram(GL, shader[4], shader[5]);
+        return { program: program,
+                sizeLoc: GL.getUniformLocation(program, 'u_size'),
+                textureLoc: GL.getUniformLocation(program, 'texture'),
+                pixelSizeLoc: GL.getUniformLocation(program, 'pixelSize'),
+                kernelLoc: GL.getUniformLocation(program, 'kernel'),
+                colorLoc: GL.getUniformLocation(program, 'color'),
+                verticesLoc: GL.getAttribLocation(program, 'pos'),
+            };
+    }
+
+
     function createNMSMaxShader(GL)
     {
         const program = createProgram(GL, shader[2], shader[3]);
@@ -261,6 +275,7 @@ const SIMPLE_FRAGMENT = `
     const grayShader = createGrayShader(gl);
     const blurShader = createBlurShader(gl);
     const nmsMaxShader = createNMSMaxShader(gl);
+    const edgesShader = createEdgesShader(gl);
     const tableShader = createLightingShader(gl);
 
     const LIGHTS = { ambient: [ 0.4, 0.4, 0.4 ],
@@ -357,9 +372,9 @@ const SIMPLE_FRAGMENT = `
 		gl.drawArrays(gl.TRIANGLES, 0, quad.count);
 
         // 必须读取帧缓存中的数据
-        var pixels = new Float32Array(800*800*4);
-        gl.readPixels(0, 0, 800, 800, gl.RGBA, gl.FLOAT, pixels);
-        console.log(pixels.sort());
+        // var pixels = new Float32Array(800*800*4);
+        // gl.readPixels(0, 0, 800, 800, gl.RGBA, gl.FLOAT, pixels);
+        // console.log(pixels.sort());
 
 	    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, level);
 		gl.disable(gl.BLEND);
@@ -374,9 +389,34 @@ const SIMPLE_FRAGMENT = `
 
 
 
+
+        // 边缘补全
+		gl.bindTexture(gl.TEXTURE_2D, nmsMask);
+		gl.useProgram(edgesShader.program);
+		gl.bindBuffer(gl.ARRAY_BUFFER, quad.vertices);
+		gl.vertexAttribPointer(edgesShader.verticesLoc, 2, gl.FLOAT, false, 0, 0);
+		gl.enableVertexAttribArray(edgesShader.verticesLoc);
+		gl.uniform1i(edgesShader.textureLoc, 0);  // first texture
+		gl.uniform2fv(edgesShader.pixelSizeLoc, pixelSize);
+		gl.uniform4fv(edgesShader.colorLoc, OUTLINE_COLOR);
+        gl.uniform1f(edgesShader.sizeLoc, Math.max(gl.drawingBufferWidth,gl.drawingBufferHeight));   
+
+		gl.disable(gl.DEPTH_TEST);
+		gl.enable(gl.BLEND);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		gl.drawArrays(gl.TRIANGLES, 0, quad.count);
+
+
+		gl.disable(gl.BLEND);
+		gl.enable(gl.DEPTH_TEST);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+
+
+
+
 		// drawModel(gl, tableShader, perspective_matrix.elements, model_matrix.elements, lights, MODEL_COLOR, model);
 
-        // requestAnimationFrame(render);
+        requestAnimationFrame(render);
     }
 })
 

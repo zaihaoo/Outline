@@ -80,18 +80,18 @@ void main()
 
     // one line code outline
     // gl_FragColor = vec4(vec3(1.0 - pow(fwidth(texture2D(texture, p / vec2(799.5,799.5)))*15.0, vec4(2)).rgb), 1.0);
-    // gl_FragColor = vec4(vec3(pow(fwidth(texture2D(texture,gl_FragCoord.xy/799.5))*8.5,vec4 (2.0)).rgb),1.0);
+    gl_FragColor = vec4(vec3(pow(fwidth(texture2D(texture,gl_FragCoord.xy/799.5))*8.5,vec4 (2.0)).rgb),1.0);
 
     // vec2 p = texCoord.xy;
 
-    if (calcGrads(p) > 0.0) {
-        gl_FragColor = vec4(
-            color.r,
-            color.g,
-            color.b,
-            1.0
-        );
-    } else {
-        discard;
-    }
+    // if (calcGrads(p) > 0.0) {
+    //     gl_FragColor = vec4(
+    //         color.r,
+    //         color.g,
+    //         color.b,
+    //         1.0
+    //     );
+    // } else {
+    //     discard;
+    // }
 }

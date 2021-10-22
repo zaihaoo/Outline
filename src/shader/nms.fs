@@ -10,7 +10,7 @@ void main()
 {
     vec2 p = gl_FragCoord.xy;
     vec4 thisTextureColor = texture2D(texture, p / u_size);
-    if (thisTextureColor.x != 0.0) {
+    if (thisTextureColor.x >= 20.0) {
         // 到这一步可以根据下面几种情况输出一下颜色来判断梯值方向和你假设的梯值方向是不是一样的 从而去修改在sobel计算中的arctan(Gx/Gy) 还是 arctan(Gy/Gx) 来改变梯值方向的计算 因为梯值方向肯定是垂直于边缘方向的
         if (abs(thisTextureColor.y) == PI/2.0) {
             // 梯值方向是垂直的 说明边缘方向是水平方向 取八邻域像素点的上下两个像素进行判断

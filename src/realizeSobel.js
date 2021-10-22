@@ -4,6 +4,9 @@ Promise.all(urls.map(url =>
 )).then(shader => {
     const canvas = document.getElementById("canvas");
     const gl = getWebGLContext(canvas);
+    // gl.enable(gl.SAMPLE_COVERAGE);
+    // gl.sampleCoverage(0.5, false);
+    // console.log(gl.getContextAttributes())
     let ext = gl.getExtension("OES_standard_derivatives"); 
     if (!ext) { 
         alert("this machine or browser does not support OES_standard_derivatives"); 
