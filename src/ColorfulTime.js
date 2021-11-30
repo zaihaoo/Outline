@@ -254,11 +254,11 @@ const SIMPLE_FRAGMENT = `
 
     function render(nowMSec) {
 		const now = 0.1 * nowMSec
-        const ROTATION_TIME = 15.0;  // 模型旋转360度所需要的时间
+        const ROTATION_TIME = 10.0;  // 模型旋转360度所需要的时间
         const longPerSec = 2.0 * Math.PI / ROTATION_TIME;
         const latPerSec = 0.5 * Math.PI / ROTATION_TIME;
         const longitudeRad = (longPerSec * now) % 360.0;
-        const latitudeRad = (latPerSec * now) % 180.0;
+        const latitudeRad = (latPerSec * now) % 360.0;
 
         model_matrix.setTranslate(0, 0, -8);
         model_matrix.rotate(longitudeRad, 0.0, 1.0, 0.0);
