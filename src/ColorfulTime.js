@@ -282,6 +282,7 @@ const SIMPLE_FRAGMENT = `
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,sobelMask, level);
 		gl.bindTexture(gl.TEXTURE_2D, selectionMask);
 		gl.useProgram(sobelShader.program);
+        
 		gl.bindBuffer(gl.ARRAY_BUFFER, quad.vertices);
 		gl.vertexAttribPointer(sobelShader.verticesLoc, 2, gl.FLOAT, false, 0, 0);
 		gl.enableVertexAttribArray(sobelShader.verticesLoc);
